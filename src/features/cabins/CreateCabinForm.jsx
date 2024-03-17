@@ -6,42 +6,45 @@ import Form from "../../ui/Form";
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
-
 import FormRow from "../../ui/FormRow";
+
 import { useCreateCabin } from "./useCreateCabin";
 import { useEditCabin } from "./useEditCabin";
 
-function CreateCabinForm({ cabinToEdit = {} }) {
+function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   const { isCreating, createCabin } = useCreateCabin();
   const { isEditing, editCabin } = useEditCabin();
-
   const isWorking = isCreating || isEditing;
+
   const { id: editId, ...editValues } = cabinToEdit;
   const isEditSession = Boolean(editId);
 
   const { register, handleSubmit, reset, getValues, formState } = useForm({
     defaultValues: isEditSession ? editValues : {},
   });
-
   const { errors } = formState;
-  console.log(errors);
 
   function onSubmit(data) {
-    console.log(data);
     const image = typeof data.image === "string" ? data.image : data.image[0];
 
     if (isEditSession)
       editCabin(
         { newCabinData: { ...data, image }, id: editId },
         {
-          onSuccess: (data) => reset(),
+          onSuccess: (data) => {
+            reset();
+            onCloseModal?.();
+          },
         }
       );
     else
       createCabin(
         { ...data, image: image },
         {
-          onSuccess: (data) => reset(),
+          onSuccess: (data) => {
+            reset();
+            onCloseModal?.();
+          },
         }
       );
   }
@@ -51,7 +54,10 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow label="Cabin name" error={errors?.name?.message}>
         <Input
           type="text"
@@ -102,7 +108,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
           {...register("discount", {
             required: "This field is required",
             validate: (value) =>
-              parseFloat(value) < parseFloat(getValues().regularPrice) ||
+              value <= getValues().regularPrice ||
               "Discount should be less than regular price",
           })}
         />
@@ -133,15 +139,17 @@ function CreateCabinForm({ cabinToEdit = {} }) {
         />
       </FormRow>
 
-      <FormRow></FormRow>
-
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          type="reset"
+          onClick={() => onCloseModal?.()}
+        >
           Cancel
         </Button>
         <Button disabled={isWorking}>
-          {isEditSession ? "Edit cabin" : "Create newcabin"}
+          {isEditSession ? "Edit cabin" : "Create new cabin"}
         </Button>
       </FormRow>
     </Form>
