@@ -1,8 +1,9 @@
 import PropTypes from "prop-types"; // Import PropTypes
-import styled, { StyleSheetManager } from "styled-components";
+import styled from "styled-components";
 import { HiXMark } from "react-icons/hi2";
 import { createPortal } from "react-dom";
 import { cloneElement, createContext, useContext, useState } from "react";
+import { useOutsideClick } from "../hooks/useOutsideClick";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -76,26 +77,23 @@ function Open({ children, opens: opensWindowName }) {
 
 function Window({ children, name }) {
   const { openName, close } = useContext(ModalContext);
+  const ref = useOutsideClick(close);
+
   if (name !== openName) return null;
 
   return createPortal(
     <Overlay>
-      <StyledModal>
+      <StyledModal ref={ref}>
         <Button onClick={close}>
           <HiXMark />
         </Button>
+
         <div>{cloneElement(children, { onCloseModal: close })}</div>
       </StyledModal>
     </Overlay>,
     document.body
   );
 }
-
-const StyledComponentWrapper = () => (
-  <StyleSheetManager shouldForwardProp={(prop) => prop !== "variation"}>
-    <Modal />
-  </StyleSheetManager>
-);
 
 // Add prop type validation for children
 Window.propTypes = {
@@ -110,4 +108,4 @@ Modal.propTypes = {
 Modal.Open = Open;
 Modal.Window = Window;
 
-export default StyledComponentWrapper;
+export default Modal;

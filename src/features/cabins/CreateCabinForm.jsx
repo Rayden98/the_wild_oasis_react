@@ -1,4 +1,4 @@
-/* eslint-disable */
+import PropTypes from "prop-types"; // Import PropTypes
 import { useForm } from "react-hook-form";
 
 import Input from "../../ui/Input";
@@ -26,7 +26,7 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
 
   function onSubmit(data) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
-
+    /* eslint-disable */
     if (isEditSession)
       editCabin(
         { newCabinData: { ...data, image }, id: editId },
@@ -155,5 +155,11 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
     </Form>
   );
 }
+
+// Add prop type validation for children
+CreateCabinForm.propTypes = {
+  cabinToEdit: PropTypes.object, // cabinToEdit should be an object
+  onCloseModal: PropTypes.func, // onCloseModal should be a function
+};
 
 export default CreateCabinForm;
