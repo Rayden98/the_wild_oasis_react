@@ -50,7 +50,7 @@ function ConfirmDelete({ resourceName, onConfirm, disabled, onCloseModal }) {
 // Add prop type validation for children
 ConfirmDelete.propTypes = {
   resourceName: PropTypes.node.isRequired,
-  onConfirm: PropTypes.node.isRequired,
+  onConfirm: PropTypes.func.isRequired,
   disabled: PropTypes.node.isRequired,
 };
 
