@@ -1,3 +1,4 @@
+import PropTypes from "prop-types"; // Import PropTypes
 import styled from "styled-components";
 
 const StyledDataItem = styled.div`
@@ -31,5 +32,12 @@ function DataItem({ icon, label, children }) {
     </StyledDataItem>
   );
 }
+
+// Add prop type validation for children
+DataItem.propTypes = {
+  icon: PropTypes.element.isRequired, // icon should be a React element and is required
+  label: PropTypes.string.isRequired, // label should be a string and is required
+  children: PropTypes.node, // children can be any renderable React node
+};
 
 export default DataItem;

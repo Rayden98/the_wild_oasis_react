@@ -29,8 +29,8 @@ function Select({ options, value, onChange, ...props }) {
 
 Select.propTypes = {
   options: PropTypes.array.isRequired,
-  value: PropTypes.func,
-  onChange: PropTypes.array.isRequired,
+  value: PropTypes.string, // Update the prop type to string
+  onChange: PropTypes.func.isRequired, // Assuming onChange is a function
 };
 
 export default Select;
